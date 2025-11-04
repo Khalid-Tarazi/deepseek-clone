@@ -10,20 +10,31 @@ const PromptBox = ({ setIsLoading, isLoading }) => {
     const { user, chats, setChats, selectedChat, setSelectedChat, fetchUsersChats, createNewChat } = useAppContext();
     const [chatReady, setChatReady] = useState(false);
 
-    // Ensure selectedChat exists
+    // Initialize chat when component mounts or user changes
     useEffect(() => {
         const initializeChat = async () => {
-            if (!selectedChat) {
-                await fetchUsersChats(); // fetch chats if not loaded
-                if (!selectedChat) {
-                    await createNewChat(); // create a new chat if none exist
-                    await fetchUsersChats(); // refetch to set selectedChat
-                }
+            if (!user) return;
+
+            let chat = selectedChat;
+
+            // Fetch chats if none
+            if (!chat) {
+                chat = await fetchUsersChats(); // fetch first chat
             }
-            setChatReady(true);
+
+            // Create new chat if still none
+            if (!chat) {
+                chat = await createNewChat();
+            }
+
+            if (chat) {
+                setSelectedChat(chat);
+                setChatReady(true);
+            }
         };
+
         initializeChat();
-    }, [selectedChat, user]);
+    }, [user]);
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -79,6 +90,7 @@ const PromptBox = ({ setIsLoading, isLoading }) => {
 
             setSelectedChat(prev => prev ? { ...prev, messages: [...prev.messages, assistantMessage] } : prev);
 
+            // Typing animation
             messageTokens.forEach((_, i) => {
                 setTimeout(() => {
                     setSelectedChat(prev => {
@@ -95,6 +107,7 @@ const PromptBox = ({ setIsLoading, isLoading }) => {
                 }, i * 100);
             });
 
+            // Update chats array with final AI message
             setChats(prevChats => prevChats.map(chat =>
                 chat._id === selectedChat._id
                     ? { ...chat, messages: [...chat.messages, { ...assistantMessage, content: aiMessageContent }] }

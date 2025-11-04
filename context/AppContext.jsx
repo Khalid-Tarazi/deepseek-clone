@@ -14,55 +14,70 @@ export const AppContextProvider = ({ children }) => {
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
 
+    // Create a new chat
     const createNewChat = async () => {
         try {
             if (!user) return null;
+
             const token = await getToken();
-            await axios.post('/api/chat/create', {}, {
+
+            const { data } = await axios.post('/api/chat/create', {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+
+            if (data.success && data.data) {
+                // Add the new chat to state and select it
+                setChats(prev => [data.data, ...prev]);
+                setSelectedChat(data.data);
+                return data.data;
+            }
+
         } catch (error) {
-            console.error(error);
             toast.error(error.message);
+            return null;
         }
     };
 
+    // Fetch all chats for the user
     const fetchUsersChats = async () => {
         try {
+            if (!user) return null;
+
             const token = await getToken();
             const { data } = await axios.get('/api/chat/get', {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
             if (data.success) {
-                if (data.data.length === 0) {
-                    await createNewChat();
-                    // fetch once more after creating chat
-                    const { data: newData } = await axios.get('/api/chat/get', {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-                    if (newData.success && newData.data.length > 0) {
-                        newData.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-                        setChats(newData.data);
-                        setSelectedChat(newData.data[0]);
-                    }
-                    return;
+                // No chats? Create one
+                if (!data.data || data.data.length === 0) {
+                    const newChat = await createNewChat();
+                    return newChat; // return the first chat
                 }
 
-                data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-                setChats(data.data);
-                setSelectedChat(data.data[0]);
+                // Sort chats by updatedAt
+                const sortedChats = data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+                setChats(sortedChats);
+
+                // Set the first chat as selected if none selected yet
+                if (!selectedChat) setSelectedChat(sortedChats[0]);
+
+                return sortedChats[0]; // return first chat
             } else {
                 toast.error(data.message);
+                return null;
             }
         } catch (error) {
             console.error(error);
             toast.error(error.message);
+            return null;
         }
     };
 
     useEffect(() => {
-        if (user) fetchUsersChats();
+        if (user) {
+            fetchUsersChats();
+        }
     }, [user]);
 
     const value = {
