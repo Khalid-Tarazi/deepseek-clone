@@ -52,7 +52,7 @@ Before running this project, make sure you have:
 - OpenRouter account for AI API
 
 
-# Note: This is a clone project for educational purposes. All AI model credits go to DeepSeek.
+### Note: This is a clone project for educational purposes. All AI model credits go to DeepSeek.
 
 ## ⚙️ Installation
 
