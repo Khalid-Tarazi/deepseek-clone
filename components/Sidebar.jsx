@@ -1,6 +1,6 @@
 import { assets } from '@/assets/assets'
 import Image from 'next/image'
-import React, { use, useState } from 'react'
+import React, { useState } from 'react'
 import { useClerk, UserButton } from '@clerk/nextjs'
 import { useAppContext } from '@/context/AppContext'
 import ChatLabel from './ChatLabel'
@@ -8,11 +8,11 @@ import ChatLabel from './ChatLabel'
 const Sidebar = ({ expand, setExpand }) => {
 
     const { openSignIn } = useClerk();
-    const { user } = useAppContext();
-    const [openMenu, setOpenMenue] = useState({ id: 0, open: false });
+    const { user, chats, createNewChat } = useAppContext();
+    const [openMenu, setOpenMenu] = useState({ id: 0, open: false });
 
     return (
-        <div className={`flex flex-col justify-between bg-[#212327] pt-7 transition-all z-50 max-md:abosolute max-md:h-screen ${expand ? 'p-4 w-64' : 'md:w-20 w-0 max-md:overflow-hidden'}`}>
+        <div className={`flex flex-col justify-between bg-[#212327] pt-7 transition-all z-50 max-md:absolute max-md:h-screen ${expand ? 'p-4 w-64' : 'md:w-20 w-0 max-md:overflow-hidden'}`}>
             <div>
                 <div className={`flex ${expand ? "flex-row gap-10" : "flex-col items-center gap-8"}`}>
                     <Image className={expand ? "w-36" : "w-10"} src={expand ? assets.logo_text : assets.logo_icon} alt='' />
@@ -31,7 +31,8 @@ const Sidebar = ({ expand, setExpand }) => {
                     </div>
                 </div>
 
-                <button className={`mt-8 flex items-center justify-center cursor-pointer ${expand ? "bg-primary hover:opacity-90 rounded-2xl gap-2 p-2.5 w-max" : "group relative h-9 w-9 mx-auto hover:bg-gray-500/30 rounded-lg"} >`}>
+                <button onClick={createNewChat}
+                    className={`mt-8 flex items-center justify-center cursor-pointer ${expand ? "bg-primary hover:opacity-90 rounded-2xl gap-2 p-2.5 w-max" : "group relative h-9 w-9 mx-auto hover:bg-gray-500/30 rounded-lg"}`}>
                     <Image className={expand ? 'w-6' : 'w-7'} src={expand ? assets.chat_icon : assets.chat_icon_dull} alt='' />
                     <div className='absolute w-max -top-12 -right-12 opacity-0 group-hover:opacity-100 transition bg-black text-white text-sm px-3 py-2 rounded-lg shadow-lg pointer-events-none'>
                         New Chat
@@ -41,13 +42,14 @@ const Sidebar = ({ expand, setExpand }) => {
                 </button>
                 <div className={`mt-8 text-white/25 text-sm ${expand ? "block" : "hidden"}`}>
                     <p className='my-1'>Recents</p>
-                    <ChatLabel openMenu={openMenu} setOpenMenue={setOpenMenue} />
+                    {chats.map((chat, index) => <ChatLabel name={chat.name} key={index} id={chat._id} openMenu={openMenu} setOpenMenu={setOpenMenu} />)}
+
                 </div>
             </div>
 
             <div>
                 <div className={`flex items-center cursor-pointer group relative ${expand ? "gap-1 text-white/80 text-sm p-2.5 border border-primary rounded-lg hover:bg-white/10 cursor-pointer" : "h-10 w-10 mx-auto hover:bg-gray-500/30 rounded-lg"}`}>
-                    <Image className={expand ? "w-5" : "w-6.5 mx-auto"} src={expand ? assets.phone_icon : assets.phone_icon_dull} alt='' />
+                    <Image className={expand ? "w-5" : "w-7 mx-auto"} src={expand ? assets.phone_icon : assets.phone_icon_dull} alt='' />
                     <div className={`absolute -top-60 pb-8 ${!expand && "-right-40"} opacity-0 group-hover:opacity-100 hidden group-hover:block transition`}>
                         <div className='relative w-max bg-black text-white text-sm p-3 rounded-lg shadow-lg'>
                             <Image className='w-44' src={assets.qrcode} alt='' />
