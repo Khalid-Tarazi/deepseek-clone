@@ -13,6 +13,7 @@ export const AppContextProvider = ({ children }) => {
 
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
+    const [chatsLoaded, setChatsLoaded] = useState(false);
 
     // Create a new chat
     const createNewChat = async () => {
@@ -49,10 +50,12 @@ export const AppContextProvider = ({ children }) => {
             });
 
             if (data.success) {
+                setChatsLoaded(true);
+                
                 // No chats? Create one
                 if (!data.data || data.data.length === 0) {
                     const newChat = await createNewChat();
-                    return newChat; // return the first chat
+                    return newChat;
                 }
 
                 // Sort chats by updatedAt
@@ -60,9 +63,12 @@ export const AppContextProvider = ({ children }) => {
                 setChats(sortedChats);
 
                 // Set the first chat as selected if none selected yet
-                if (!selectedChat) setSelectedChat(sortedChats[0]);
+                if (!selectedChat) {
+                    setSelectedChat(sortedChats[0]);
+                    return sortedChats[0];
+                }
 
-                return sortedChats[0]; // return first chat
+                return sortedChats[0];
             } else {
                 toast.error(data.message);
                 return null;
@@ -75,10 +81,10 @@ export const AppContextProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        if (user) {
+        if (user && !chatsLoaded) {
             fetchUsersChats();
         }
-    }, [user]);
+    }, [user, chatsLoaded]);
 
     const value = {
         user,
@@ -87,7 +93,8 @@ export const AppContextProvider = ({ children }) => {
         selectedChat,
         setSelectedChat,
         fetchUsersChats,
-        createNewChat
+        createNewChat,
+        chatsLoaded
     };
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
