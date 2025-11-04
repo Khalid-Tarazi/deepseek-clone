@@ -51,30 +51,8 @@ Before running this project, make sure you have:
 - Clerk account for authentication
 - OpenRouter account for AI API
 
-## 🏗 Project Structure
 
-deepseek-clone/
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   │   ├── chat/          # Chat-related endpoints
-│   │   ├── webhooks/      # Clerk webhooks
-│   │   └── ...
-│   ├── globals.css        # Global styles
-│   └── layout.js          # Root layout
-├── components/            # React components
-│   ├── Sidebar.jsx        # Chat sidebar
-│   ├── PromptBox.jsx      # Message input
-│   ├── Message.jsx        # Chat message display
-│   └── ...
-├── context/               # React context
-│   └── AppContext.jsx     # Global state management
-├── models/                # Database models
-│   ├── User.js           # User schema
-│   └── Chat.js           # Chat schema
-├── assets/               # Static assets
-└── config/              # Configuration files
-
-## Note: This is a clone project for educational purposes. All AI model credits go to DeepSeek.
+# Note: This is a clone project for educational purposes. All AI model credits go to DeepSeek.
 
 ## ⚙️ Installation
 
