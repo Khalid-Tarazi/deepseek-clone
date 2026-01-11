@@ -27,7 +27,7 @@ export async function POST(req) {
     const userMessage = { role: "user", content: prompt, timestamp: Date.now() };
     chat.messages.push(userMessage);
 
-    // ✅ DeepSeek via OpenRouter
+    // DeepSeek via OpenRouter
     const completion = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {

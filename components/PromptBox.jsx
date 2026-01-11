@@ -1,6 +1,6 @@
 import { assets } from '@/assets/assets';
 import { useAppContext } from '@/context/AppContext';
-import { useAuth } from '@clerk/nextjs'; // Import useAuth
+import { useAuth } from '@clerk/nextjs';
 import axios from 'axios';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
