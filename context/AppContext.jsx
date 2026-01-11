@@ -8,12 +8,19 @@ export const AppContext = createContext();
 export const useAppContext = () => useContext(AppContext);
 
 export const AppContextProvider = ({ children }) => {
-    const { user } = useUser();
+    const { user, isLoaded } = useUser(); // Add isLoaded
     const { getToken } = useAuth();
 
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
     const [chatsLoaded, setChatsLoaded] = useState(false);
+
+    // Clear all chat data
+    const clearChatData = () => {
+        setChats([]);
+        setSelectedChat(null);
+        setChatsLoaded(false);
+    };
 
     // Create a new chat
     const createNewChat = async () => {
@@ -27,7 +34,6 @@ export const AppContextProvider = ({ children }) => {
             });
 
             if (data.success && data.data) {
-                // Add the new chat to state and select it
                 setChats(prev => [data.data, ...prev]);
                 setSelectedChat(data.data);
                 return data.data;
@@ -52,17 +58,14 @@ export const AppContextProvider = ({ children }) => {
             if (data.success) {
                 setChatsLoaded(true);
                 
-                // No chats? Create one
                 if (!data.data || data.data.length === 0) {
                     const newChat = await createNewChat();
                     return newChat;
                 }
 
-                // Sort chats by updatedAt
                 const sortedChats = data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
                 setChats(sortedChats);
 
-                // Set the first chat as selected if none selected yet
                 if (!selectedChat) {
                     setSelectedChat(sortedChats[0]);
                     return sortedChats[0];
@@ -80,11 +83,29 @@ export const AppContextProvider = ({ children }) => {
         }
     };
 
+    // Clear chat data when user logs out
     useEffect(() => {
-        if (user && !chatsLoaded) {
+        if (isLoaded && !user) {
+            // User has signed out
+            clearChatData();
+        }
+    }, [user, isLoaded]);
+
+    // Fetch chats when user is loaded and authenticated
+    useEffect(() => {
+        if (isLoaded && user && !chatsLoaded) {
             fetchUsersChats();
         }
-    }, [user, chatsLoaded]);
+    }, [user, isLoaded, chatsLoaded]);
+
+    useEffect(() => {
+    if (!user && chats.length > 0) {
+        // User logged out - clear all chat data
+        setChats([]);
+        setSelectedChat(null);
+        setChatsLoaded(false);
+    }
+}, [user]);
 
     const value = {
         user,
@@ -94,7 +115,8 @@ export const AppContextProvider = ({ children }) => {
         setSelectedChat,
         fetchUsersChats,
         createNewChat,
-        chatsLoaded
+        chatsLoaded,
+        clearChatData
     };
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

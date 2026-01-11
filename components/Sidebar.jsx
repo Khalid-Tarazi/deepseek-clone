@@ -11,6 +11,10 @@ const Sidebar = ({ expand, setExpand }) => {
     const [openMenu, setOpenMenu] = useState({ id: 0, open: false });
 
     const handleNewChat = async () => {
+        if (!user) {
+            openSignIn(); // Open sign in if no user
+            return;
+        }
         const newChat = await createNewChat();
         if (!expand) setExpand(true);
     };
@@ -36,10 +40,9 @@ const Sidebar = ({ expand, setExpand }) => {
                     {expand && <p className="text-white font-medium">New Chat</p>}
                 </button>
 
-                {/* Recent Chats - ONLY ONE "Recents" heading */}
-                {expand && (
+                {/* Recent Chats - Only show if user exists */}
+                {expand && user && (
                     <div className="mt-8 text-white/25 text-sm">
-                        {/* Only one Recents heading here */}
                         <p className="my-1">Recents</p>
                         <div className="space-y-1" style={{ maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}>
                             {chats.map(chat => (
@@ -60,7 +63,7 @@ const Sidebar = ({ expand, setExpand }) => {
             <div className="flex-shrink-0">
                 <div className="flex items-center gap-3 text-white/60 text-sm p-2 mt-2 cursor-pointer hover:bg-white/10 rounded-lg transition-colors">
                     {user ? <UserButton /> : <Image className="w-7 cursor-pointer" src={assets.profile_icon} alt="" onClick={openSignIn} />}
-                    {expand && <span>My Profile</span>}
+                    {expand && <span>{user ? "My Profile" : "Sign In"}</span>}
                 </div>
             </div>
         </div>

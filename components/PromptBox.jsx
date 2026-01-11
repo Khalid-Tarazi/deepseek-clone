@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 const PromptBox = ({ setIsLoading, isLoading }) => {
     const [prompt, setPrompt] = useState('');
     const { user, chats, setChats, selectedChat, setSelectedChat, fetchUsersChats, createNewChat } = useAppContext();
-    const { getToken } = useAuth(); // Get getToken from useAuth
+    const { getToken } = useAuth();
     const [chatReady, setChatReady] = useState(false);
 
     // Initialize chat when component mounts or user changes
@@ -17,6 +17,7 @@ const PromptBox = ({ setIsLoading, isLoading }) => {
         const initializeChat = async () => {
             if (!user) {
                 setChatReady(false);
+                setPrompt(''); // Clear prompt
                 return;
             }
 
@@ -51,13 +52,15 @@ const PromptBox = ({ setIsLoading, isLoading }) => {
     const sendPrompt = async (e) => {
         e.preventDefault();
 
-        if (!user) return toast.error('Login to send message');
+        if (!user) {
+            toast.error('Please sign in to send messages');
+            return;
+        }
         if (!selectedChat) {
             toast.error('No chat selected. Creating new chat...');
             const newChat = await createNewChat();
             if (newChat) {
                 setSelectedChat(newChat);
-                // Retry sending the message after a short delay
                 setTimeout(() => sendPrompt(e), 100);
             }
             return;
@@ -84,7 +87,7 @@ const PromptBox = ({ setIsLoading, isLoading }) => {
         setSelectedChat(prev => prev ? { ...prev, messages: [...prev.messages, userPrompt] } : prev);
 
         try {
-            const token = await getToken(); // Now getToken is defined
+            const token = await getToken();
             const { data } = await axios.post('/api/chat/ai', {
                 chatId: selectedChat._id,
                 prompt: promptCopy
@@ -148,11 +151,11 @@ const PromptBox = ({ setIsLoading, isLoading }) => {
                 onKeyDown={handleKeyDown}
                 className='outline-none w-full resize-none overflow-hidden break-words bg-transparent'
                 rows={2}
-                placeholder={chatReady ? 'Message DeepSeek' : 'Loading chat...'}
+                placeholder={!user ? 'Please sign in to chat' : (chatReady ? 'Message DeepSeek' : 'Loading chat...')}
                 required
                 onChange={(e) => setPrompt(e.target.value)}
                 value={prompt}
-                disabled={!chatReady || isLoading}
+                disabled={!user || !chatReady || isLoading}
             />
             <div className='flex items-center justify-between text-sm mt-2'>
                 <div className="flex items-center gap-2">
@@ -169,7 +172,7 @@ const PromptBox = ({ setIsLoading, isLoading }) => {
                     <Image className='w-4 cursor-pointer' src={assets.pin_icon} alt='' />
                     <button 
                         type="submit" 
-                        disabled={!chatReady || isLoading}
+                        disabled={!user || !chatReady || isLoading}
                         className={`${prompt && chatReady ? "bg-primary" : "bg-[#71717a]"} rounded-full p-2 cursor-pointer disabled:cursor-not-allowed`}
                     >
                         <Image className='w-3.5 aspect-square' src={prompt && chatReady ? assets.arrow_icon : assets.arrow_icon_dull} alt='' />
