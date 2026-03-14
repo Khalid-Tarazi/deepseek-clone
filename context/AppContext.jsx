@@ -15,14 +15,12 @@ export const AppContextProvider = ({ children }) => {
     const [selectedChat, setSelectedChat] = useState(null);
     const [chatsLoaded, setChatsLoaded] = useState(false);
 
-    // Clear all chat data
     const clearChatData = () => {
         setChats([]);
         setSelectedChat(null);
         setChatsLoaded(false);
     };
 
-    // Create a new chat
     const createNewChat = async () => {
         try {
             if (!user) return null;
@@ -45,7 +43,6 @@ export const AppContextProvider = ({ children }) => {
         }
     };
 
-    // Fetch all chats for the user
     const fetchUsersChats = async () => {
         try {
             if (!user) return null;
