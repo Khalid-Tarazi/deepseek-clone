@@ -51,9 +51,6 @@ Before running this project, make sure you have:
 - Clerk account for authentication
 - OpenRouter account for AI API
 
-
-### Note: This is a clone project for educational purposes. All AI model credits go to DeepSeek.
-
 ## ⚙️ Installation
 
 1. **Clone the repository**
