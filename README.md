@@ -1,4 +1,4 @@
-# DeepSeek Clone 🤖
+# DeepSeek Clone
 
 A full-stack AI chat application clone of DeepSeek, built with modern web technologies. This project features real-time chat interactions with AI, user authentication, and persistent chat history.
 
@@ -7,7 +7,7 @@ A full-stack AI chat application clone of DeepSeek, built with modern web techno
 ![React](https://img.shields.io/badge/React-18.2-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)
 
-## 🚀 Features
+## Features
 
 - **AI-Powered Conversations**: Integrates with DeepSeek AI via OpenRouter API
 - **Real-time Chat Interface**: Smooth typing animations and instant responses
@@ -18,11 +18,11 @@ A full-stack AI chat application clone of DeepSeek, built with modern web techno
 - **Responsive Design**: Tailwind CSS for mobile-friendly interface
 - **Modern UI/UX**: Clean, dark-themed interface inspired by DeepSeek
 
-## 🌐 Live Demo
+## Live Demo
 
 Experience the application live: [**Visit DeepSeek Clone**](https://deepseek-clone-jet.vercel.app/)
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
 - **React 18** - UI library
@@ -42,7 +42,7 @@ Experience the application live: [**Visit DeepSeek Clone**](https://deepseek-clo
 - **React Hot Toast** - Notification system
 - **Axios** - HTTP client
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before running this project, make sure you have:
 
@@ -51,7 +51,7 @@ Before running this project, make sure you have:
 - Clerk account for authentication
 - OpenRouter account for AI API
 
-## ⚙️ Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
