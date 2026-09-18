@@ -20,7 +20,7 @@ A full-stack AI chat application clone of DeepSeek, built with modern web techno
 
 ## Live Demo
 
-Experience the application live: [**Visit DeepSeek Clone**](https://deepseek-clone-jet.vercel.app/)
+Experience the application live: [**Visit DeepSeek Clone**](https://deepseek.tarazi.dev/)
 
 ## Tech Stack
 
